@@ -1,0 +1,6 @@
+*.pyc
+*.bck
+
+GRCh38_noalt_as/
+tar_seq/
+work/
