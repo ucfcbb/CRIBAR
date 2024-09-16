@@ -86,4 +86,4 @@ python3 cribar.py --chr chr20 --start 20000001 --end 20005001 --work_dir ../work
 
 ## CONTACTS
 
-For bug reports or comments please contact shzhang@cs.ucf.edu
+For bug reports or comments please contact mahfuz@ucf.edu or xiaolichen.cs@gmail.com.
