@@ -24,9 +24,10 @@ def calc_off_target_score(work_dir, index_dir, on_target_primer2info, pam_f, mis
 def calc_off_target_score_bowtie(work_dir,
                                  bowtie_index,
                                  on_target_primer2info,
-                                 src_dir,
                                  pam_seq,
                                  target_coor,
+                                 mm_scores,
+                                 pam_scores,
                                  mismatch_num=3,
                                  verbose=False,
                                  max_hits_on_genome=300):
@@ -50,5 +51,5 @@ def calc_off_target_score_bowtie(work_dir,
 
     off_target_primer2info = parse_bowtie_result_by_pysam(bowtie_out_file, target_coor, pam_seq)
 
-    calc_score_batch(off_target_primer2info, src_dir)
+    calc_score_batch(off_target_primer2info, mm_scores, pam_scores)
     return off_target_primer2info

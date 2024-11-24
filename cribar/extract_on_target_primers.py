@@ -113,7 +113,7 @@ def get_primers_bruteforce(_seq, tar_chr, tar_start, forbidden_strings, pam='NGG
     return primers
 
 
-def get_on_target_info_n2(primers, work_dir, target_seq, pam, src_dir, mismatch_num):
+def get_on_target_info_n2(primers, work_dir, target_seq, pam, mm_scores, pam_scores, mismatch_num):
     n, primers = len(primers), list(primers)
     primer_res = OrderedDict()
     for i in range(n):
@@ -124,7 +124,7 @@ def get_on_target_info_n2(primers, work_dir, target_seq, pam, src_dir, mismatch_
             primer_seq_j = primers[j][0]
             if sum(a!=b for a, b in zip(primer_seq_i, primer_seq_j)) > int(mismatch_num):
                 continue
-            score = calc_cfd(key, primer_seq_j[:-3], primer_seq_j[-2:], src_dir)
+            score = calc_cfd(key, primer_seq_j[:-3], primer_seq_j[-2:], mm_scores, pam_scores)
             primer_res[primer_seq_i].add(tuple(list(primers[j])+[score]))
 
     new_primer_res = OrderedDict()
@@ -135,7 +135,7 @@ def get_on_target_info_n2(primers, work_dir, target_seq, pam, src_dir, mismatch_
     return new_primer_res
 
 
-def get_on_target_info_crispritz(primers, work_dir, target_seq_path, pam_f, src_dir, crispritz_dir, mismatch_num):
+def get_on_target_info_crispritz(primers, work_dir, target_seq_path, pam_f, mm_scores, pam_scores, crispritz_dir, mismatch_num):
     _primer_file = work_dir + "cribar_on_target_primer"
     with open(_primer_file, "w") as _primer_file_handler:
         for p in primers:
@@ -147,7 +147,7 @@ def get_on_target_info_crispritz(primers, work_dir, target_seq_path, pam_f, src_
 
     primer_res = parse_crispritz_res(on_target_pos_file)
 
-    calc_score_batch(primer_res, src_dir)
+    calc_score_batch(primer_res, mm_scores, pam_scores)
 
     return primer_res
 

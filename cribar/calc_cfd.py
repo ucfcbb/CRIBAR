@@ -1,19 +1,22 @@
-import pickle
-import re
 from util import revcom
 
+
 # Unpickle mismatch scores and PAM scores
-def get_mm_pam_scores(src_dir):
+def get_score_dict(input_text):
     try:
-        mm_scores = pickle.load(open(src_dir + '/mismatch_score.pkl','rb'))
-        pam_scores = pickle.load(open(src_dir + '/pam_score.pkl','rb'))
-        return mm_scores, pam_scores
+        result_dict = {}
+
+        for line in input_text.strip().splitlines():
+            key, value = line.split('=')  # Split only on the first '='
+            result_dict[key.strip()] = float(value.strip())  # Convert value to float
+        return result_dict
     except:
         raise Exception("Could not find file with mismatch scores or PAM scores")
 
 
 # Calculates CFD score
-def calc_cfd(wt, sg, pam, src_dir):
+# https://github.com/maximilianh/crisporWebsite/tree/master/CFD_Scoring
+def calc_cfd(wt, sg, pam, mm_scores, pam_scores):
     # cfd score only works for 20+3 nt sgRNA
     # for sgRNA with other length, return 1 to only count the number of hits
     if len(wt) != 20 or len(sg) != 20:
@@ -23,7 +26,6 @@ def calc_cfd(wt, sg, pam, src_dir):
         return 0
     if "N" in sg:
         return 0
-    mm_scores, pam_scores = get_mm_pam_scores(src_dir)
     score = 1
     sg = sg.replace('T','U')
     wt = wt.replace('T','U')
@@ -39,13 +41,13 @@ def calc_cfd(wt, sg, pam, src_dir):
     return score
 
 
-def calc_score_batch(primer_res, src_dir):
+def calc_score_batch(primer_res, mm_scores, pam_scores):
     for p in primer_res.keys():
         tmp = []
         for hit in primer_res[p]:
             # primer -> dna, chr, pos, dir, score
             hit_seq = hit[0].upper()
             pam = hit_seq[-2:]
-            tmp.append(tuple(list(hit) + [calc_cfd(p, hit_seq[:-3], pam, src_dir)]))
+            tmp.append(tuple(list(hit) + [calc_cfd(p, hit_seq[:-3], pam, mm_scores, pam_scores)]))
         primer_res[p] = tmp
 

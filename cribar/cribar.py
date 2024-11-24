@@ -1,12 +1,13 @@
 from extract_on_target_primers import get_primers_for_ritz, collapse_primer, extract_regions_by_getfasta
 from extract_on_target_primers import get_on_target_info_n2, get_primers_bruteforce, get_primers_for_ritz, get_on_target_info_crispritz
 from calc_off_target_score import calc_off_target_score, calc_off_target_score_bowtie
+from calc_cfd import get_score_dict
 from select_primers import run_selection
 from util import bowtie_filter, calc_score_for_primer, read_forbidden_strings
 import time
 import argparse
 import os
-
+import json
 
 USE_CRISPRITZ = False
 ONLY_CONSIDER_TOP100_GRNAS = False
@@ -60,6 +61,9 @@ def get_parser():
     parser.add_argument('--crispritz_dir', nargs='?', default="../lib/linux-64_crispritz-2.6.6-py39h68928f9_1/bin/", type=str)
     parser.add_argument('--verbose', action='store_true')
 
+    parser.add_argument('--mm_scores', type=str)
+    parser.add_argument('--pam_scores', type=str)
+
     return parser
 
 
@@ -87,12 +91,6 @@ if __name__ == '__main__':
     src_dir = args.src_dir
     tar_dir = args.tar_seq_dir
 
-    if not os.path.exists(work_dir):
-        os.makedirs(work_dir)
-
-    if not os.path.exists(tar_dir):
-        os.makedirs(tar_dir)
-
     fasta_file = genome_prefix + ".fa"
     bowtie_index = genome_prefix
 
@@ -117,6 +115,24 @@ if __name__ == '__main__':
         if verbose:
             print ("Did not find CRISPRitz, use build-in on-target searching")
 
+    # read customized score
+    mm_score_text = args.mm_scores
+    pam_score_text = args.pam_scores
+
+    # use cfd if no customized score
+    if not (mm_score_text and pam_score_text):
+        with open(src_dir + '/score/mismatch_score', 'r') as file:
+            mm_score_text = file.read()
+        with open(src_dir + '/score/pam_score', 'r') as file:
+            pam_score_text = file.read()
+
+    try:
+        mm_scores = get_score_dict(mm_score_text)
+        pam_scores = get_score_dict(pam_score_text)
+    except:
+        print("Failed to parse score weights.")
+        exit(0)
+
     if USE_CRISPRITZ:
         pam_file = work_dir+"crispritz_pam.txt"
         with open(pam_file,'w') as pam_file_handler:
@@ -125,10 +141,10 @@ if __name__ == '__main__':
         crispritz_index_dir = args.crispritz_genome_index_dir
 
         primers = get_primers_for_ritz(seq, forbidden_strings, grna_len, pam_seq)
-        on_target_primer2info = get_on_target_info_crispritz(primers, work_dir, tar_dir, pam_file, src_dir, crispritz_dir, mismatch_num)
+        on_target_primer2info = get_on_target_info_crispritz(primers, work_dir, tar_dir, pam_file, mm_scores, pam_scores, crispritz_dir, mismatch_num)
     else:
         primers = get_primers_bruteforce(seq, tar_chr, tar_start, forbidden_strings, pam_seq, grna_len)
-        on_target_primer2info = get_on_target_info_n2(primers, work_dir, seq, pam_seq, src_dir, mismatch_num)
+        on_target_primer2info = get_on_target_info_n2(primers, work_dir, seq, pam_seq, mm_scores, pam_scores, mismatch_num)
 
     # if ONLY_CONSIDER_TOP100_GRNAS:
     #     for p in sorted(on_target_primer2info.keys(), reverse=True, key=lambda x: len(on_target_primer2info[x]))[:100]:
@@ -161,9 +177,10 @@ if __name__ == '__main__':
     off_target_primer2info = calc_off_target_score_bowtie(work_dir,
                                                           bowtie_index,
                                                           on_target_primer2info,
-                                                          src_dir,
                                                           pam_seq,
                                                           (tar_chr, tar_start, tar_end),
+                                                          mm_scores,
+                                                          pam_scores,
                                                           mismatch_num,
                                                           verbose)
 
