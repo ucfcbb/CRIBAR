@@ -129,6 +129,13 @@ if __name__ == '__main__':
     try:
         mm_scores = get_score_dict(mm_score_text)
         pam_scores = get_score_dict(pam_score_text)
+
+        if len(mm_scores) != 240:
+            print("Mismatch score file should have 240 lines.")
+            exit(0)
+        if len(pam_scores) != 16:
+            print("Pam score file should have 16 lines.")
+            exit(0)
     except:
         print("Failed to parse score weights.")
         exit(0)

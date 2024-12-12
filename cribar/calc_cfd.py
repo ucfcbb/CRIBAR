@@ -8,7 +8,11 @@ def get_score_dict(input_text):
 
         for line in input_text.strip().splitlines():
             key, value = line.split('=')  # Split only on the first '='
-            result_dict[key.strip()] = float(value.strip())  # Convert value to float
+            try:
+                result_dict[key.strip()] = float(value.strip())  # Convert value to float
+            except:
+                print(f"Failed to parse score file line: {line}")
+                exit(0)
         return result_dict
     except:
         raise Exception("Could not find file with mismatch scores or PAM scores")
