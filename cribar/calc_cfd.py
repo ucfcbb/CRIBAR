@@ -40,7 +40,13 @@ def calc_cfd(wt, sg, pam, mm_scores, pam_scores):
             continue
         else:
             key = 'r'+wt_list[i]+':d'+revcom(sl)+','+str(i+1)
+            if key not in mm_scores:
+                print(f"Missing key {key} in mismatch score specification.")
+                exit(0)
             score *= mm_scores[key]
+    if pam not in pam_scores:
+        print(f"Missing key {pam} in PAM score specification.")
+        exit(0)
     score *= pam_scores[pam]
     return score
 
