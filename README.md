@@ -75,7 +75,7 @@ python3 cribar.py --chr chr20 --start 20000001 --end 20005001 --work_dir ../work
 **end**:	The ending position of target region.  
 **len**:	The length of gRNA (not include pam).  
 **formulation**:	1 - Given the minimum on-target activity score, output the minimal set of sgRNAs.  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2 - Given the maximum number of sgRNAs, output a set of sgRNAs with the maximum on-target activity score.  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2 - Given the maximum number of sgRNAs, output a set of sgRNAs with the maximum on-target activity score.  
 **constraint:**	When formulation=1, constrain is the minimum on-target activity score. When formulation=2, constrain is the maximum gRNA number.  
 **pam_seq:**	Protospacer adjacent motif. Default is NGG.  
 **mismatch:**	The number of mismatches allowed in each gRNA.  
