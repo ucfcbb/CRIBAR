@@ -83,6 +83,8 @@ python3 cribar.py --chr chr20 --start 20000001 --end 20005001 --work_dir ../work
 **off_target_ratio:**	The threshold of (off-target binding site density) / (on-target binding site density).  
 **min_gap:**	The minimum distance between two binding sites.  
 **excluded_substring:**	Excluded substrings separated by a comma. Example: AAAA,TTTT.  
+**mismatch and pam scores:**	If you want to use your own scores instead of the CFD scores, you can modify the files mismatch_score and pam_score in the score folder. CRIBAR will read the scores from these two files.  
+
 
 ## CONTACTS
 
