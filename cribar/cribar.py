@@ -38,7 +38,7 @@ def get_parser():
     # parser.add_argument('--reference-genome', nargs='?', default="hg38", type=str)
 
     # advanced options
-    parser.add_argument('--mismatch', type=int,
+    parser.add_argument('--mismatch', nargs='?', default=1, type=int,
                         help='The number of mismatches allowed in each gRNA in the target region')
     parser.add_argument('--off_target_window', nargs='?', default=0, type=int,
                         help='The window size that CRIBAR uses to check the off-target. \n \
@@ -53,11 +53,11 @@ def get_parser():
     # internal parameters
     parser.add_argument('--crispritz_genome_index_dir', type=str)
     parser.add_argument('--genome_prefix', type=str)
-    parser.add_argument('--src_dir', type=str)
-    parser.add_argument('--work_dir', nargs='?', default=os.getcwd() + "/", type=str)
+    parser.add_argument('--src_dir', nargs='?', default=os.getcwd() + "/", type=str)
+    parser.add_argument('--work_dir', nargs='?', default=os.getcwd() + "/../work/", type=str)
     # target seq dir, CRISPRitz searches all fa files in a folder.
     # We re-use the target sequence path for bruteforce for simplicity
-    parser.add_argument('--tar_seq_dir', nargs='?', default="tar_seq/", type=str)
+    parser.add_argument('--tar_seq_dir', nargs='?', default=os.getcwd() + "/../tar_seq/", type=str)
     parser.add_argument('--crispritz_dir', nargs='?', default="../lib/linux-64_crispritz-2.6.6-py39h68928f9_1/bin/", type=str)
     parser.add_argument('--verbose', action='store_true')
 
