@@ -15,9 +15,9 @@ On-target activity score is the weighted sum of the number of binding sites. For
 ## Dependencies
 
 Python 3.8, pysam 0.21.0, PuLP 2.7.0: ILP solver dependencies\
-bedtools: To get fasta for the target regions\
-bowtie: To search for off-target sites\
-CRISPRitz(Optional): To exhaustively search for off-target sites
+[bedtools](https://bedtools.readthedocs.io/en/latest/): To get fasta for the target regions\
+[bowtie](https://bowtie-bio.sourceforge.net/index.shtml): To search for off-target sites\
+[CRISPRitz](https://github.com/pinellolab/CRISPRitz)(Optional): To exhaustively search for off-target sites
 
 **Install prelimineries in Ubuntu**
 
@@ -64,7 +64,7 @@ Download CRISPRitz from https://anaconda.org/bioconda/crispritz/files and put th
 Open terminal from the folder that contains cribar.py and run the following command:
 
 ```
-python3 cribar.py --chr chr20 --start 20000001 --end 20005001 --work_dir ../work/ --tar_seq_dir ../tar_seq/ --genome_prefix ../GRCh38_noalt_as/GRCh38_noalt_as --src_dir ./ --len 20 --mismatch 3 --formulation 1 --constraint 5 --pam_seq NGG --off_target_window 0 --off_target_ratio 0.2 --min_gap 30 --excluded_substring AAAA,TTTT
+python3 cribar.py --chr chr20 --start 20000001 --end 20005001 --genome_prefix ../GRCh38_noalt_as/GRCh38_noalt_as --formulation 1 --constraint 5
 ```
 
 ## Parameter description
